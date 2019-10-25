@@ -17,7 +17,7 @@ contract Auction{
     Person [] public bidders;
     Item [] public items;
     Person chairPerson;
-    
+
     constructor()public{
       owner=msg.sender;
       max_bidders=4;
@@ -30,10 +30,11 @@ contract Auction{
       items[1]=Item({itemId:1,itemTokens:array});
       items[2]=Item({itemId:2,itemTokens:array});
     }
-    function register() public payable{
-        require(biddersCount<max_bidders);
+   
+    function register(address addr) public payable{
+        require(biddersCount<max_bidders,'Auction capacity full');
         bidders[biddersCount].tokenId=biddersCount;
-        bidders[biddersCount].pAddress=msg.sender;
+        bidders[biddersCount].pAddress=addr;
         bidders[biddersCount].tokenBal=5;
         biddersCount++;
     }
