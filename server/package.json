@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "ethers": "^4.0.38",
     "express": "^4.17.1",
     "ganache-cli": "^6.7.0",
     "python": "0.0.4"
