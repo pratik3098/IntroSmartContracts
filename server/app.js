@@ -7,22 +7,142 @@ const app = express()
 app.set('title','Smart contract')
 app.use(bodyParser.urlencoded({extended: false}))
 
-/* app.listen(9000,()=>{
+app.listen(9000,()=>{
     console.log("Server is running on port: 9000")
-}) */
-app.get('',(req,res)=>{
+})
+app.get('/',(req,res)=>{
     res.sendFile("index.html",{root: __dirname})   
 })
 
-let provider = ethers.getDefaultProvider('rinkeby')
-let privateKey= 'BE6E757CC0D4827D8587189F41399C6F3DE2131BF30ADDDA04B9281A568B90D1'
-let wallet = new ethers.Wallet(privateKey, provider)
+app.post('/submit',(req,res)=>{
+    try{
+        
+     }
+     catch(err){ 
+         res.redirect('/')
+     }
+})
 
-async function deploy_contract(){
-    let abi=[ 
+
+let wallet 
+let contractAddress
+let contract
+
+function generate_wallet(private){
+    wallet = new ethers.Wallet(privateKey, provider)
+    contractAddress= "0xCA35b7d915458EF540aDe6068dFe2F44E8fa733c"
+    provider = ethers.getDefaultProvider('rinkeby')
+    privateKey= private
+}
+
+async function get_contract(){
+    /*let abi=[ 
         "constructor()",
         "function register() public payable",
         "function bid(uint _itemId, uint _count) public payable",
+    ]*/
+    let abi=[
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "_itemId",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "_count",
+                    "type": "uint256"
+                }
+            ],
+            "name": "bid",
+            "outputs": [],
+            "payable": true,
+            "stateMutability": "payable",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [],
+            "name": "register",
+            "outputs": [],
+            "payable": true,
+            "stateMutability": "payable",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [],
+            "name": "revealWinners",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "payable": true,
+            "stateMutability": "payable",
+            "type": "constructor"
+        },
+        {
+            "constant": true,
+            "inputs": [],
+            "name": "beneficiary",
+            "outputs": [
+                {
+                    "internalType": "address",
+                    "name": "",
+                    "type": "address"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "name": "items",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "itemId",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "name": "winners",
+            "outputs": [
+                {
+                    "internalType": "address",
+                    "name": "",
+                    "type": "address"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        }
     ]
     let bytecode ={
         "linkReferences": {},
@@ -31,15 +151,12 @@ async function deploy_contract(){
         "sourceMap": "25:5115:0:-;;;814:1;797:18;;1140:10;1128:11;;:22;;;;;;;;;;;;;;;;;;1202:24;1248:38;;;;;;;;1261:1;1248:38;;;;1274:10;1248:38;;;1237:5;1243:1;1237:8;;;;;;;;;;:49;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;1435:38;;;;;;;;1448:1;1435:38;;;;1461:10;1435:38;;;1426:5;1432:1;1426:8;;;;;;;;;;:47;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;1493:38;;;;;;;;1506:1;1493:38;;;;1519:10;1493:38;;;1484:5;1490:1;1484:8;;;;;;;;;;:47;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;848:722;25:5115;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;:::o;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;:::-;;;;;;;"
     }
   
-    let factory = new ethers.ContractFactory(abi, bytecode, wallet)
-    let contract = await factory.deploy("Auction contract")
-    console.log(contract.address)
-    console.log(contract.deployTransaction.hash);
-    await contract.deployed()
+   contract = new ethers.Contract(contractAddress, abi, provider)
+   console.log(contract)
 }
 
 
-deploy_contract().catch(err=>{
+get_contract().catch(err=>{
     console.error(err)
 })
 
