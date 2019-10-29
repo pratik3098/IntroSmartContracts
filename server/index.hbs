@@ -1,0 +1,32 @@
+<!DOCTYPE html> 
+<html>
+    <head>
+        <title> Smart contract</title>
+    </head>
+    <body>
+        <h2> Welcome to Auction Smart Contract!</h2>
+        <form action="/register" method="POST">
+            <h2>Calling register function</h2>
+            <p>
+                <button class="submit">Call Register Bidders </button>
+            </p>
+           </form>
+           {{msg1}}
+        <form action="/bid" method="POST">
+        <h2>Calling bid function</h2>
+        <p>
+        <label for="itemId">ItemId: </label>
+        <input type="text" id="itemId" name="itemId" class="itemId" placeholder="Valid Ids: [0,1,2] only">
+        </p>
+        <p>
+           <label for="token">Token Count: </label>
+           <input type="text" id="token" name="token" class="token" placeholder="Valid Count: <=5 only">
+           </p>
+        <p>
+            <button class="submit">Call Bid</button>
+        </p>
+        {{msg2}}
+       </form>
+       
+    </body>
+</html>

@@ -1,31 +1,40 @@
-  
 const path=require('path')
 const express= require('express')
 const bodyParser= require('body-parser');
 const ethers = require('ethers')
 const app = express()
+app.set('view engine','hbs')
+app.set('views','./')
 app.set('title','Smart contract')
 app.use(bodyParser.urlencoded({extended: false}))
 
-/*app.listen(9000,()=>{
+app.listen(9000,()=>{
     console.log("Server is running on port: 9000")
-})*/
+})
 app.get('/',(req,res)=>{
-    res.sendFile("index.html",{root: __dirname})   
+    generate_wallet()
+    get_contract()
+    res.render("index")   
 })
 
 app.post('/bid',(req,res)=>{
     try{
-        generate_wallet("xyz")
-        get_contract()
+        call_bid(req.body.itemId,req.body.token).catch(err=>{
+            console.error(err)
+        })
+        res.render
      }
      catch(err){ 
          res.redirect('/')
      }
 })
 
-app.post('/winner',(req,res)=>{
-    try{
+app.post('/register',(req,res)=>{
+    try{   
+              register().catch(err=>{
+                  console.error(err)
+              })
+              res.render("index",{msg1:"Users registered"})
      }
      catch(err){ 
          res.redirect('/')
@@ -38,14 +47,12 @@ let contractAddress
 let contract
 let provider
 let privateKey
-async deploy_contract(){}
 
-function generate_wallet(private){
+
+function generate_wallet(){
     privateKey= "0x042f98f8a86fb1c4867f7798d097478f35a1de042184ff79b7f5092f05c6b176"
     provider = ethers.getDefaultProvider('rinkeby')
     wallet = new ethers.Wallet(privateKey, provider)
-    contractAddress= "0x5fe0394c287bd0d116f6a2f3d61e96a164eedf00"
-    console.log(wallet)
 }
 
 async function get_contract(){
@@ -159,16 +166,22 @@ async function get_contract(){
         "sourceMap": "25:5115:0:-;;;814:1;797:18;;1140:10;1128:11;;:22;;;;;;;;;;;;;;;;;;1202:24;1248:38;;;;;;;;1261:1;1248:38;;;;1274:10;1248:38;;;1237:5;1243:1;1237:8;;;;;;;;;;:49;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;1435:38;;;;;;;;1448:1;1435:38;;;;1461:10;1435:38;;;1426:5;1432:1;1426:8;;;;;;;;;;:47;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;1493:38;;;;;;;;1506:1;1493:38;;;;1519:10;1493:38;;;1484:5;1490:1;1484:8;;;;;;;;;;:47;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;848:722;25:5115;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;:::o;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;:::-;;;;;;;"
     }
   
-   contract = new ethers.Contract(contractAddress, abi, provider)
-   contract=contract.connect(wallet)
-   console.log(contract)
-   let tx = await contract.register()
-   await tx.wait()
+    let factory = new ethers.ContractFactory(abi, bytecode, wallet)
+    contract = await factory.deploy()
+    contractAddress=contract.address
+    await contract.deployed()
+    console.log(contract)
+
 }
 
+async function register(){
+    let tx = await contract.register()
+   console.log(tx)
+   await tx.wait()
+}
+async function call_bid(item,token){
+    let tx= await contract.call_bid(item,token)
+    console.log(tx)
+    await tx.wait()
+}
 
-
-generate_wallet('XYZ')
-get_contract().catch(err=>{
-    console.error(err)
-})
