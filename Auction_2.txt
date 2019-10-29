@@ -79,7 +79,7 @@ contract Auction {
             bidItem.itemTokens.push(tokenDetails[msg.sender].personId);
         }
     }
-    function revealWinners() public {
+    function revealWinners() public onlyOwner(){
 
     /*
         Iterate over all the items present in the auction. If at least on person has placed a bid, randomly select the winner 
@@ -109,7 +109,11 @@ contract Auction {
         );
         _;
     }
-
+    modifier onlyOwner()
+    {
+        require(beneficiary==msg.sender,"Error: Only accessible by owner");
+         _;
+    }
     //  Miscellaneous methods: Below methods are used to assist Grading. Please
     // DONOT CHANGE THEM.
     // function getPersonDetails(uint id) public constant
