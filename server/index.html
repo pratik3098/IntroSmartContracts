@@ -5,10 +5,25 @@
     </head>
     <body>
         <h2> Welcome to Auction Smart Contract!</h2>
-        <form action='/submit' method=post>
-            <label for="privateKey" ><b>Enter private key</b></label>
-            <input type="text" placeholder="Enter your private key" name="privateKey" value="43D57D2EEAC30F7F172042747F79830356AFDFAD43D22BEF5C1C1BA5239C9ED0" >
-            <button type="submit">Access</button>
-        </form>
+        <form action="/bid" method="POST">
+        <h2>Calling bid function</h2>
+        <p>
+        <label for="itemId">ItemId: </label>
+        <input type="text" id="ItemId" class="ItemId" placeholder="Valid Ids: [0,1,2] only">
+        </p>
+        <p>
+           <label for="bid">Token Count: </label>
+           <input type="text" id="bid" class="bid" placeholder="Valid Count: <=5 only">
+           </p>
+        <p>
+            <button class="submit">Call Bid</button>
+        </p>
+       </form>
+       <form action="/winner" method="POST">
+        <h2>Calling reveal Winners functions</h2>
+        <p>
+            <button class="submit">Call Reveal Winners</button>
+        </p>
+       </form>
     </body>
 </html>

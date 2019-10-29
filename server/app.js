@@ -7,16 +7,25 @@ const app = express()
 app.set('title','Smart contract')
 app.use(bodyParser.urlencoded({extended: false}))
 
-app.listen(9000,()=>{
+/*app.listen(9000,()=>{
     console.log("Server is running on port: 9000")
-})
+})*/
 app.get('/',(req,res)=>{
     res.sendFile("index.html",{root: __dirname})   
 })
 
-app.post('/submit',(req,res)=>{
+app.post('/bid',(req,res)=>{
     try{
-        
+        generate_wallet("xyz")
+        get_contract()
+     }
+     catch(err){ 
+         res.redirect('/')
+     }
+})
+
+app.post('/winner',(req,res)=>{
+    try{
      }
      catch(err){ 
          res.redirect('/')
@@ -27,20 +36,19 @@ app.post('/submit',(req,res)=>{
 let wallet 
 let contractAddress
 let contract
+let provider
+let privateKey
+async deploy_contract(){}
 
 function generate_wallet(private){
-    wallet = new ethers.Wallet(privateKey, provider)
-    contractAddress= "0xCA35b7d915458EF540aDe6068dFe2F44E8fa733c"
+    privateKey= "0x042f98f8a86fb1c4867f7798d097478f35a1de042184ff79b7f5092f05c6b176"
     provider = ethers.getDefaultProvider('rinkeby')
-    privateKey= private
+    wallet = new ethers.Wallet(privateKey, provider)
+    contractAddress= "0x5fe0394c287bd0d116f6a2f3d61e96a164eedf00"
+    console.log(wallet)
 }
 
 async function get_contract(){
-    /*let abi=[ 
-        "constructor()",
-        "function register() public payable",
-        "function bid(uint _itemId, uint _count) public payable",
-    ]*/
     let abi=[
         {
             "constant": false,
@@ -152,11 +160,15 @@ async function get_contract(){
     }
   
    contract = new ethers.Contract(contractAddress, abi, provider)
+   contract=contract.connect(wallet)
    console.log(contract)
+   let tx = await contract.register()
+   await tx.wait()
 }
 
 
+
+generate_wallet('XYZ')
 get_contract().catch(err=>{
     console.error(err)
 })
-
