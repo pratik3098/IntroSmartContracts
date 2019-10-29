@@ -1,4 +1,4 @@
-pragma solidity ^0.5.9;
+﻿pragma solidity ^0.5.9;
 contract Auction {
     // Data
     //Structure to hold details of the item
@@ -104,7 +104,7 @@ contract Auction {
     modifier onlyBy(uint _itemId, uint _count)
     {
         require(
-            (bidders[tokenDetails[msg.sender].personId].remainingTokens<_count || bidders[tokenDetails[msg.sender].personId].remainingTokens==0 || _itemId > 2),
+            (bidders[tokenDetails[msg.sender].personId].remainingTokens>=_count && bidders[tokenDetails[msg.sender].personId].remainingTokens!=0 && _itemId <= 2),
             "Error occured"
         );
         _;
