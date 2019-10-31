@@ -28,11 +28,17 @@ app.get('/',(req,res)=>{
 
 app.post('/bid',(req,res)=>{
   
-        call_bid(req.body.itemId,req.body.token).catch(err=>{
-            console.error(err)
-            res.redirect('/')
-        })
+      
+        if(req.body.itemId>2||req.body.token>5){
+        message+="Error: Invalid args\n"
+        }
+        else{
+            call_bid(req.body.itemId,req.body.token).catch(err=>{
+                console.error(err)
+                res.redirect('/')
+            })
         message+="itemId: "+ req.body.itemId+", tokenCount: "+ req.body.token+"\n"
+        }
         res.render('index',{msg1: "Users registered",msg2: message})
 
 })
@@ -51,7 +57,7 @@ app.post('/register',(req,res)=>{
 
 
 function generate_wallet(){
-    privateKey= "0x0ec4e48e1207ddf411e89cc5beb84021cf69a9c1e22409503da1f3d3dc3cc85e"
+    privateKey= "0x5aebccecefb08a00a7c74d68a17b973d1bb5896e1194c6e949fe144747677c8d"
     provider=new ethers.providers.JsonRpcProvider()
    // provider = ethers.getDefaultProvider('rinkeby')
     wallet = new ethers.Wallet(privateKey, provider)
@@ -183,8 +189,9 @@ async function get_contract(){
 async function register(){
     try{
     let tx = await contract.register()
-   console.log(tx)
+   
    await tx.wait()
+   console.log(JSON.stringify(tx))
     }
     catch(err){
         throw err
@@ -193,8 +200,9 @@ async function register(){
 async function call_bid(item,token){
   try {
     let tx= await contract.bid(item,token)
-    console.log(tx)
+    
     await tx.wait()
+    console.log(JSON.stringify(tx))
     }
     catch(err){
     throw err
